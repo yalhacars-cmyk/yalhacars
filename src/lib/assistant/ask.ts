@@ -1,14 +1,14 @@
-import { groq } from "@ai-sdk/groq";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createServerFn } from "@tanstack/react-start";
 import { generateText, Output } from "ai";
 import { z } from "zod";
 import { isAvailable, listCars, type Car } from "@/data/cars";
 import { heuristicMatch } from "@/lib/assistant/heuristic";
 
-// Verified against GET https://api.groq.com/openai/v1/models — this is the
-// largest currently-available Groq model with `structured_outputs` support,
-// which `Output.object()` below relies on for a reliable JSON reply.
-const GROQ_MODEL = "openai/gpt-oss-120b";
+// `-latest` aliases track the current Gemini Flash-Lite model, so this keeps
+// working when Google retires older versions. Gemini supports structured
+// output, which `Output.object()` below relies on for a reliable JSON reply.
+const GEMINI_MODEL = process.env["GEMINI_MODEL"] ?? "gemini-flash-lite-latest";
 
 // This endpoint is public and every call can hit a paid model, so bound what a
 // single request can cost: capped message/reply length, and only the most
@@ -59,9 +59,9 @@ function toInventoryContext(cars: Car[]) {
 }
 
 /**
- * "AI Car Assistant" — tries Groq (structured output, constrained to the
- * real live inventory) and falls back to a local keyword matcher if Groq is
- * unavailable (no/invalid GROQ_API_KEY, rate limited, network error), so the
+ * "AI Car Assistant" — tries Gemini (structured output, constrained to the
+ * real live inventory) and falls back to a local keyword matcher if Gemini is
+ * unavailable (no/invalid GEMINI_API_KEY, rate limited, network error), so the
  * feature degrades gracefully rather than breaking.
  */
 export const askAssistantFn = createServerFn({ method: "POST" })
@@ -70,10 +70,11 @@ export const askAssistantFn = createServerFn({ method: "POST" })
     const cars = await listCars();
     const inventory = toInventoryContext(cars);
 
-    if (process.env["GROQ_API_KEY"]) {
+    const geminiKey = process.env["GEMINI_API_KEY"];
+    if (geminiKey) {
       try {
         const { output } = await generateText({
-          model: groq(GROQ_MODEL),
+          model: createGoogleGenerativeAI({ apiKey: geminiKey })(GEMINI_MODEL),
           output: Output.object({ schema: resultSchema }),
           system: [
             "You are Yalhacar's car shopping assistant for a Saudi Arabia car marketplace.",
@@ -93,7 +94,7 @@ export const askAssistantFn = createServerFn({ method: "POST" })
         return {
           reply: output.reply,
           matchedCarIds: output.matchedCarIds.filter((id) => validIds.has(id)),
-          source: "groq" as const,
+          source: "gemini" as const,
         };
       } catch {
         // fall through to heuristic below

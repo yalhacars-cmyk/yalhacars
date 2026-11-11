@@ -2,7 +2,7 @@ import type { Car } from "@/data/cars";
 import { isAvailable } from "@/data/cars";
 
 /**
- * Local, no-API fallback used when Groq is unavailable (missing key, rate
+ * Local, no-API fallback used when Gemini is unavailable (missing key, rate
  * limited, network error) so the assistant never just breaks. Parses a
  * budget number, body type, brand and condition out of free text (EN + AR
  * keywords) and filters the real inventory — never invents a car.
