@@ -10,8 +10,6 @@ import { getBodyTypes, getBrands, getHeroSlides } from "@/data/siteContent";
 import { useLocale, useT } from "@/lib/i18n/context";
 import { formatSar, tr } from "@/lib/i18n/dictionary";
 
-const heroDetail = "/cars/car-hero-detail.jpg";
-
 export const Route = createFileRoute("/")({
   loader: async () => {
     const [cars, brands, bodyTypes, heroSlidesContent] = await Promise.all([
@@ -56,6 +54,9 @@ function Home() {
   // Admin-managed slides (see /admin/content → Hero) come first, falling
   // back to the one hardcoded intro slide only when none have been
   // configured yet, so the hero is never blank on a fresh setup.
+  // Banner slides only use real inventory: cars that have a photo and a price.
+  const heroCars = cars.filter((car) => car.image && car.price > 0).slice(0, 6);
+
   const introSlides: HeroSlide[] =
     heroSlidesContent.length > 0
       ? heroSlidesContent.map((s) => ({
@@ -66,29 +67,34 @@ function Home() {
           title: locale === "ar" ? s.titleAr : s.titleEn,
           subtitle: locale === "ar" ? s.subtitleAr : s.subtitleEn,
         }))
-      : [
-          {
-            kind: "intro",
-            image: heroDetail,
-            alt: "Close-up detail of a freshly inspected certified vehicle",
-            eyebrow: t.hero.introEyebrow,
-            title: t.hero.introTitle,
-            subtitle: t.hero.introSubtitle,
-          },
-        ];
+      : heroCars[0]?.image
+        ? [
+            {
+              kind: "intro",
+              image: heroCars[0].image,
+              alt: heroCars[0].title,
+              eyebrow: t.hero.introEyebrow,
+              title: t.hero.introTitle,
+              subtitle: t.hero.introSubtitle,
+            },
+          ]
+        : [];
 
   const heroSlides: HeroSlide[] = [
     ...introSlides,
-    ...cars.map((car): HeroSlide => ({
+    ...heroCars.map((car): HeroSlide => ({
       kind: "car",
       carId: car.id,
       image: car.image,
       alt: car.title,
       eyebrow: `${tr(car.condition, locale)} · ${tr(car.city, locale)}`,
       title: car.title,
-      subtitle: `${formatSar(car.price, locale)} · ${
-        locale === "ar" ? "تبدأ من" : "from"
-      } ${formatSar(car.monthly, locale)}/${locale === "ar" ? "شهر" : "mo"}`,
+      subtitle:
+        car.monthly > 0
+          ? `${formatSar(car.price, locale)} · ${
+              locale === "ar" ? "تبدأ من" : "from"
+            } ${formatSar(car.monthly, locale)}/${locale === "ar" ? "شهر" : "mo"}`
+          : formatSar(car.price, locale),
     })),
   ];
 
