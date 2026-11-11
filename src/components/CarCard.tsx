@@ -123,18 +123,26 @@ export function CarCard({ car }: { car: Car }) {
           <span className="inline-flex items-center gap-1">
             <Calendar className="size-3.5 text-sand-fg/50" /> {formatNumber(car.year, locale)}
           </span>
-          <span className="inline-flex items-center gap-1">
-            <Gauge className="size-3.5 text-sand-fg/50" /> {formatNumber(car.mileageKm, locale)} km
-          </span>
+          {car.mileageKm > 0 ? (
+            <span className="inline-flex items-center gap-1">
+              <Gauge className="size-3.5 text-sand-fg/50" /> {formatNumber(car.mileageKm, locale)} km
+            </span>
+          ) : null}
         </div>
 
         <div className="mt-3 flex items-center justify-between">
           <div className="num font-display text-xl leading-none font-semibold">
-            {formatSar(car.price, locale)}
+            {car.price > 0
+              ? formatSar(car.price, locale)
+              : locale === "ar"
+                ? "اتصل لمعرفة السعر"
+                : "Contact for price"}
           </div>
-          <div className="num font-display text-sm leading-none font-semibold text-sand-accent">
-            {formatSar(car.monthly, locale)}/{locale === "ar" ? "شهر" : "mo"}
-          </div>
+          {car.price > 0 && car.monthly > 0 ? (
+            <div className="num font-display text-sm leading-none font-semibold text-sand-accent">
+              {formatSar(car.monthly, locale)}/{locale === "ar" ? "شهر" : "mo"}
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-1.5 flex h-[22px] items-center gap-2">

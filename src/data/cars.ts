@@ -53,6 +53,10 @@ export type Car = {
   engine_cc?: number | null;
   engine_cylinders?: number | null;
   gear_type?: string | null;
+  /** Imported-listing fields (see supabase/add_listing_source_fields.sql). */
+  neighborhood?: string | null;
+  posted_at?: string | null;
+  source_url?: string | null;
   roof_type?: string | null;
   interior_type?: string | null;
   /** Free-text seller description, from the submission form. */

@@ -76,6 +76,9 @@ function BuyPage() {
   const [bodyType, setBodyType] = useState<string>(search.bodyType ?? "All");
   const [fuel, setFuel] = useState<(typeof fuels)[number]>("All");
   const [color, setColor] = useState<string>(search.color ?? "All");
+  const [gear, setGear] = useState<string>("All");
+  const [minYear, setMinYear] = useState(2020);
+  const [maxMileage, setMaxMileage] = useState(300000);
   const [maxPrice, setMaxPrice] = useState(search.maxPrice ?? 450000);
   const [maxMonthly, setMaxMonthly] = useState(8000);
   const [sort, setSort] = useState<(typeof sortKeys)[number]>("Recommended");
@@ -112,9 +115,12 @@ function BuyPage() {
         (city === "All" || car.city === city) &&
         (bodyType === "All" || car.bodyType === bodyType) &&
         (fuel === "All" || car.fuel === fuel) &&
+        (gear === "All" || car.gear_type === gear) &&
+        car.year >= minYear &&
+        (car.mileageKm <= maxMileage || maxMileage >= 300000) &&
         (color === "All" || car.exteriorColor.toLowerCase().includes(color.toLowerCase())) &&
-        car.price <= maxPrice &&
-        car.monthly <= maxMonthly,
+        (car.price <= maxPrice || car.price <= 0) &&
+        (!car.monthly || car.monthly <= maxMonthly),
     );
 
     const sorted = [...filtered];
@@ -133,7 +139,7 @@ function BuyPage() {
         break;
     }
     return sorted;
-  }, [cars, make, condition, city, bodyType, fuel, color, maxPrice, maxMonthly, sort]);
+  }, [cars, make, condition, city, bodyType, fuel, gear, minYear, maxMileage, color, maxPrice, maxMonthly, sort]);
 
   const conditionOptions = conditions.map((c) => ({
     value: c,
@@ -268,6 +274,48 @@ function BuyPage() {
                 options={fuelOptions}
                 value={fuel}
                 onChange={(v) => setFuel(v as (typeof fuels)[number])}
+              />
+            </FilterGroup>
+
+            <FilterGroup label={locale === "ar" ? "ناقل الحركة" : "Transmission"}>
+              <ChipRow
+                options={[
+                  { value: "All", label: t.buy.all },
+                  { value: "Automatic", label: locale === "ar" ? "أوتوماتيك" : "Automatic" },
+                  { value: "Manual", label: locale === "ar" ? "يدوي" : "Manual" },
+                ]}
+                value={gear}
+                onChange={(v) => setGear(v)}
+              />
+            </FilterGroup>
+
+            <FilterGroup
+              label={`${locale === "ar" ? "سنة الصنع من" : "Year from"} · ${formatNumber(minYear, locale)}`}
+            >
+              <input
+                type="range"
+                min={2020}
+                max={2026}
+                step={1}
+                value={minYear}
+                onChange={(e) => setMinYear(Number(e.target.value))}
+                className="w-full accent-brass"
+              />
+            </FilterGroup>
+
+            <FilterGroup
+              label={`${locale === "ar" ? "أقصى عداد" : "Max mileage"} · ${
+                maxMileage >= 300000 ? (locale === "ar" ? "الكل" : "Any") : `${formatNumber(maxMileage, locale)} km`
+              }`}
+            >
+              <input
+                type="range"
+                min={10000}
+                max={300000}
+                step={10000}
+                value={maxMileage}
+                onChange={(e) => setMaxMileage(Number(e.target.value))}
+                className="w-full accent-brass"
               />
             </FilterGroup>
 

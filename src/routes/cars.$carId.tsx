@@ -387,8 +387,29 @@ function CarDetailPage() {
               {car.title}
             </h1>
             <div className="mt-1 text-sm text-sand-fg/65">
-              {car.trim} · {formatNumber(car.mileageKm, locale)} KM · {tr(car.city, locale)}
+              {[car.trim, car.mileageKm > 0 ? `${formatNumber(car.mileageKm, locale)} KM` : null, car.gear_type ? (locale === "ar" ? (car.gear_type === "Manual" ? "يدوي" : "أوتوماتيك") : car.gear_type) : null, tr(car.city, locale)].filter(Boolean).join(" · ")}
             </div>
+            {car.neighborhood || car.posted_at || car.source_url ? (
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 text-xs text-sand-fg/55">
+                {car.neighborhood ? (
+                  <span>
+                    {locale === "ar" ? "الحي: " : "Neighborhood: "}
+                    {car.neighborhood}
+                  </span>
+                ) : null}
+                {car.posted_at ? <span>{postedAgo(car.posted_at, locale)}</span> : null}
+                {car.source_url ? (
+                  <a
+                    href={car.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2"
+                  >
+                    {locale === "ar" ? "الإعلان الأصلي" : "Original listing"}
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
 
             <div className="mt-4 flex flex-wrap gap-2 text-xs">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-paper px-3 py-1.5 ring-1 ring-hairline">
@@ -417,12 +438,18 @@ function CarDetailPage() {
               {t.carDetail.cashPrice}
             </div>
             <div className="num font-display text-3xl font-semibold">
-              {formatSar(car.price, locale)}
+              {car.price > 0
+                ? formatSar(car.price, locale)
+                : locale === "ar"
+                  ? "اتصل لمعرفة السعر"
+                  : "Contact for price"}
             </div>
-            <div className="num mt-1 text-sm text-sand-accent">
-              {t.carDetail.installmentFrom} {formatSar(car.monthly, locale)}
-              {t.carDetail.perMonth}
-            </div>
+            {car.price > 0 && car.monthly > 0 ? (
+              <div className="num mt-1 text-sm text-sand-accent">
+                {t.carDetail.installmentFrom} {formatSar(car.monthly, locale)}
+                {t.carDetail.perMonth}
+              </div>
+            ) : null}
 
             <div className="mt-5 flex flex-wrap gap-1.5">
               {car.badges.map((b) => (
@@ -699,4 +726,15 @@ function BreakdownRow({
       <span>{value}</span>
     </div>
   );
+}
+
+function postedAgo(iso: string, locale: string): string {
+  const mins = Math.max(1, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  const [n, en, ar] =
+    mins < 60
+      ? [mins, "m", "دقيقة"]
+      : mins < 1440
+        ? [Math.floor(mins / 60), "h", "ساعة"]
+        : [Math.floor(mins / 1440), "d", "يوم"];
+  return locale === "ar" ? `نُشر منذ ${n} ${ar}` : `Posted ${n}${en} ago`;
 }
