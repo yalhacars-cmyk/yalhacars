@@ -1,0 +1,160 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * YALHACAR — design system with a light default and a full dark alternate.
+ * Base (this @theme block) = LIGHT theme values. [data-theme="dark"] below
+ * overrides the same custom properties for the dark alternate — nothing
+ * else in the app needs to know which theme is active. Every surface
+ * token (paper/sand/panel) flips with the theme; only literal photo-overlay
+ * treatments (badges/controls composited on top of a photograph, not a
+ * page surface) stay hardcoded dark regardless of theme — those use
+ * bg-black/text-white directly rather than these tokens.
+ */
+
+@theme {
+  --color-ink: #121212;
+  --color-ink-2: #1f1f1f;
+  --color-sand: #ffffff;
+  --color-sand-fg: #121212;
+  --color-sand-accent: #b45309;
+  --color-sand-2: #f4511d;
+  --color-brass: #f4511d;
+  --color-brass-2: #f68a5c;
+  --color-mist: #6b7280;
+  --color-muted-fg: #6b7280;
+  --color-paper: #f7f7f8;
+  --color-line: #e6e6e6;
+  --color-hairline: rgba(0, 0, 0, 0.08);
+  --color-hairline-2: rgba(0, 0, 0, 0.12);
+
+  /* Panel = the header, footer, hero and callout bands. Flips with the
+     theme like every other surface — a light, neutral band in light mode,
+     a near-black band in dark mode. */
+  --color-panel: #ffffff;
+  --color-panel-2: #f2f2f3;
+  --color-panel-fg: #121212;
+  --color-panel-accent: #c2410c;
+
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-sand);
+  --color-card-foreground: var(--color-sand-fg);
+  --color-primary: var(--color-brass);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--color-sand);
+  --color-secondary-foreground: var(--color-sand-fg);
+  --color-accent: var(--color-brass);
+  --color-accent-foreground: #ffffff;
+  --color-muted: var(--color-sand);
+  --color-muted-foreground: var(--color-muted-fg);
+  --color-border: var(--color-line);
+  --color-input: var(--color-line);
+  --color-ring: var(--color-brass);
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 16px;
+  --radius-panel: 18px;
+  --radius-control: 10px;
+
+  --animate-rise: rise 0.5s ease both;
+}
+
+/* Dark alternate — same tokens, dark values. Toggled via ThemeProvider
+   setting/removing data-theme="dark" on <html>. */
+[data-theme="dark"] {
+  --color-ink: #ffffff;
+  --color-ink-2: #f2f2f2;
+  --color-sand: #161616;
+  --color-sand-fg: #ffffff;
+  --color-sand-accent: #ffb347;
+  --color-mist: #a3a3a3;
+  --color-muted-fg: #a3a3a3;
+  --color-paper: #0b0b0b;
+  --color-line: #2a2a2a;
+  --color-hairline: rgba(255, 255, 255, 0.1);
+  --color-hairline-2: rgba(255, 255, 255, 0.15);
+
+  --color-panel: #0b0b0b;
+  --color-panel-2: #161616;
+  --color-panel-fg: #ffffff;
+  --color-panel-accent: #f68a5c;
+  --color-destructive: #e5484d;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Finance partner logo strip (Footer) — track holds the item list twice back
+   to back, so sliding it exactly -50% loops seamlessly regardless of how
+   many logos there are. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility diagonal {
+  background-image: linear-gradient(
+    115deg,
+    transparent 0 46%,
+    rgba(244, 81, 29, 0.16) 46% 54%,
+    transparent 54% 70%,
+    rgba(244, 81, 29, 0.1) 70% 76%,
+    transparent 76%
+  );
+}
+
+@utility rise {
+  animation: var(--animate-rise);
+}
