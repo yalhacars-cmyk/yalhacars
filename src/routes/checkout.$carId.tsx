@@ -68,7 +68,7 @@ function CheckoutPage() {
   const [city, setCity] = useState(car.city);
   const [addressLine, setAddressLine] = useState("");
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash_on_delivery");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("moyasar");
   const [reservation, setReservation] = useState<Reservation | null>(null);
 
   const amount = reservationAmount(car.price);
@@ -335,20 +335,21 @@ function CheckoutPage() {
                     icon={Landmark}
                     active={paymentMethod === "amwal"}
                     label={t.checkout.amwal}
+                    comingSoon
                     onClick={() => setPaymentMethod("amwal")}
                   />
                   <PaymentOption
                     logo={partnerLogo(tabby, locale)}
                     active={paymentMethod === "tabby"}
                     label="Tabby"
-                    sublabel={t.checkout.splitPay}
+                    comingSoon
                     onClick={() => setPaymentMethod("tabby")}
                   />
                   <PaymentOption
                     logo={partnerLogo(tamara, locale)}
                     active={paymentMethod === "tamara"}
                     label="Tamara"
-                    sublabel={t.checkout.splitPay}
+                    comingSoon
                     onClick={() => setPaymentMethod("tamara")}
                   />
                 </div>
@@ -464,6 +465,7 @@ function PaymentOption({
   active,
   label,
   sublabel,
+  comingSoon,
   onClick,
 }: {
   icon?: typeof Banknote;
@@ -471,14 +473,19 @@ function PaymentOption({
   active: boolean;
   label: string;
   sublabel?: string;
+  comingSoon?: boolean;
   onClick: () => void;
 }) {
+  const { locale } = useLocale();
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={comingSoon}
+      aria-disabled={comingSoon}
       className={cn(
         "flex flex-col items-start gap-2 rounded-control p-3 text-sm ring-1 transition-colors",
+        comingSoon && "cursor-not-allowed opacity-50",
         active
           ? "bg-brass text-white ring-brass"
           : "bg-paper text-ink/70 ring-hairline hover:bg-panel-2",
@@ -493,7 +500,11 @@ function PaymentOption({
       ) : null}
       <span>
         <span className="block font-medium">{label}</span>
-        {sublabel ? (
+        {comingSoon ? (
+          <span className="block text-xs text-ink/45">
+            {locale === "ar" ? "قريباً" : "Available soon"}
+          </span>
+        ) : sublabel ? (
           <span className={cn("block text-xs", active ? "text-white/75" : "text-ink/45")}>
             {sublabel}
           </span>
