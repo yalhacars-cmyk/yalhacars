@@ -1,3 +1,4 @@
+import { CarPhoto } from "@/components/CarPhoto";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
   Activity,
@@ -187,10 +188,10 @@ function CarDetailPage() {
                 className="block w-full cursor-zoom-in"
                 aria-label={t.carDetail.viewFullscreen}
               >
-                <img
-                  src={car.gallery[activeImage]}
+                <CarPhoto
+                  src={car.gallery[activeImage]!}
                   alt={car.title}
-                  className="aspect-[16/10] w-full object-cover"
+                  className="aspect-[16/10] w-full"
                 />
               </button>
               <div className="absolute end-3 bottom-3 rounded-full bg-black/70 px-2.5 py-1 text-xs font-medium text-white backdrop-blur">
@@ -214,10 +215,10 @@ function CarDetailPage() {
                     (i === activeImage ? "ring-2 ring-brass" : "ring-hairline")
                   }
                 >
-                  <img
+                  <CarPhoto
                     src={src}
                     alt={`${car.title} view ${i + 1}`}
-                    className="aspect-[4/3] w-20 object-cover"
+                    className="aspect-[4/3] w-20"
                   />
                 </button>
               ))}
@@ -686,7 +687,7 @@ function CarDetailPage() {
                   params={{ carId: c.id }}
                   className="overflow-hidden rounded-card bg-sand text-sand-fg ring-1 ring-hairline transition-transform hover:-translate-y-1"
                 >
-                  <img src={c.image} alt={c.title} className="aspect-[4/3] w-full object-cover" />
+                  <CarPhoto src={c.image} alt={c.title} loading="lazy" className="aspect-[4/3] w-full" />
                   <div className="p-3">
                     <div className="font-display text-sm font-medium">{c.title}</div>
                     <div className="num mt-1 text-sm font-semibold">

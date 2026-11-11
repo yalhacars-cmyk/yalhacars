@@ -1,3 +1,4 @@
+import { CarPhoto } from "@/components/CarPhoto";
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -49,14 +50,14 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   return (
     <section className="relative -mt-16 min-h-[100dvh] overflow-hidden bg-black text-white">
       {slides.map((s, i) => (
-        <img
+        <CarPhoto
           key={i}
           src={s.image}
           alt={s.alt}
           aria-hidden={i !== active}
           loading={i === 0 ? "eager" : "lazy"}
           className={cn(
-            "absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out",
+            "absolute inset-0 h-full w-full transition-opacity duration-1000 ease-in-out",
             i === active ? "opacity-100" : "opacity-0",
           )}
         />

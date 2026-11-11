@@ -1,3 +1,4 @@
+import { CarPhoto } from "@/components/CarPhoto";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Car, ImageOff, Plus } from "lucide-react";
 import { SignInPrompt } from "@/components/site/AuthControls";
@@ -115,10 +116,10 @@ function ListingCard({ listing }: { listing: MyListing }) {
     <>
       <div className="relative aspect-[4/3] bg-panel-2">
         {listing.photoUrl ? (
-          <img
+          <CarPhoto
             src={listing.photoUrl}
             alt={listing.title}
-            className="size-full object-cover"
+            className="size-full"
             loading="lazy"
           />
         ) : (

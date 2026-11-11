@@ -1,3 +1,4 @@
+import { CarPhoto } from "@/components/CarPhoto";
 import { Link } from "@tanstack/react-router";
 import { Calendar, ChevronLeft, ChevronRight, Gauge, Heart } from "lucide-react";
 import { useState } from "react";
@@ -33,16 +34,11 @@ export function CarCard({ car }: { car: Car }) {
     <article className="group overflow-hidden rounded-card bg-sand text-sand-fg ring-1 ring-hairline transition-transform hover:-translate-y-1">
       <div className="relative">
         <Link to="/cars/$carId" params={{ carId: car.id }}>
-          <img
-            src={car.gallery[active]}
+          <CarPhoto
+            src={car.gallery[active]!}
             alt={car.title}
             loading="lazy"
-            width={1024}
-            height={768}
-            className={cn(
-              "aspect-[4/3] w-full object-cover",
-              status !== "available" && "opacity-60",
-            )}
+            className={cn("aspect-[4/3] w-full", status !== "available" && "opacity-60")}
           />
         </Link>
 

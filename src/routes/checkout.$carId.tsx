@@ -1,3 +1,4 @@
+import { CarPhoto } from "@/components/CarPhoto";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import {
   Banknote,
@@ -207,10 +208,10 @@ function CheckoutPage() {
               <div>
                 <h2 className="font-display text-lg font-semibold">{t.checkout.step1Heading}</h2>
                 <div className="mt-4 flex gap-4 rounded-control bg-paper p-4 ring-1 ring-hairline">
-                  <img
+                  <CarPhoto
                     src={car.image}
                     alt={car.title}
-                    className="size-24 shrink-0 rounded-control object-cover"
+                    className="size-24 shrink-0 rounded-control"
                   />
                   <div>
                     <div className="font-display text-base font-medium text-ink">{car.title}</div>

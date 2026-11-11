@@ -1,3 +1,4 @@
+import { CarPhoto } from "@/components/CarPhoto";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -108,11 +109,7 @@ function ComparePage() {
                         params={{ carId: car.id }}
                         className="block overflow-hidden rounded-control ring-1 ring-hairline"
                       >
-                        <img
-                          src={car.image}
-                          alt={car.title}
-                          className="aspect-[4/3] w-full object-cover"
-                        />
+                        <CarPhoto src={car.image} alt={car.title} className="aspect-[4/3] w-full" />
                       </Link>
                       <Link
                         to="/cars/$carId"
@@ -280,11 +277,11 @@ function CarPicker({
                 onClick={() => select(car.id)}
                 className="flex w-full items-center gap-2 rounded-control px-2 py-2 text-left text-sm hover:bg-sand/60"
               >
-                <img
+                <CarPhoto
                   src={car.image}
                   alt=""
                   loading="lazy"
-                  className="size-10 shrink-0 rounded-[6px] object-cover ring-1 ring-hairline"
+                  className="size-10 shrink-0 rounded-[6px] ring-1 ring-hairline"
                 />
                 <span className="min-w-0 flex-1 truncate">{car.title}</span>
               </button>
