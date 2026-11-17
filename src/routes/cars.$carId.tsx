@@ -390,7 +390,7 @@ function CarDetailPage() {
             <div className="mt-1 text-sm text-sand-fg/65">
               {[car.trim, car.mileageKm > 0 ? `${formatNumber(car.mileageKm, locale)} KM` : null, car.gear_type ? (locale === "ar" ? (car.gear_type === "Manual" ? "يدوي" : "أوتوماتيك") : car.gear_type) : null, tr(car.city, locale)].filter(Boolean).join(" · ")}
             </div>
-            {car.neighborhood || car.posted_at || car.source_url ? (
+            {car.neighborhood || car.posted_at ? (
               <div className="mt-1 flex flex-wrap items-center gap-x-3 text-xs text-sand-fg/55">
                 {car.neighborhood ? (
                   <span>
@@ -399,16 +399,6 @@ function CarDetailPage() {
                   </span>
                 ) : null}
                 {car.posted_at ? <span>{postedAgo(car.posted_at, locale)}</span> : null}
-                {car.source_url ? (
-                  <a
-                    href={car.source_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline underline-offset-2"
-                  >
-                    {locale === "ar" ? "الإعلان الأصلي" : "Original listing"}
-                  </a>
-                ) : null}
               </div>
             ) : null}
 
