@@ -127,6 +127,11 @@ function LanguageToggle() {
   );
 }
 
+async function signOutAdmin() {
+  await adminLogout();
+  window.location.href = "/admin/login";
+}
+
 function SignOutButton({ email }: { email: string }) {
   return (
     <div className="space-y-2 border-t border-panel-fg/10 p-3">
@@ -134,10 +139,7 @@ function SignOutButton({ email }: { email: string }) {
       <div className="truncate px-1 text-xs text-panel-fg/50">{email}</div>
       <button
         type="button"
-        onClick={async () => {
-          await adminLogout();
-          window.location.href = "/admin/login";
-        }}
+        onClick={signOutAdmin}
         className="flex w-full items-center gap-2 rounded-control px-3 py-2 text-sm font-medium text-panel-fg/70 ring-1 ring-panel-fg/10 hover:text-panel-fg"
       >
         <LogOut className="size-4" /> Sign out
@@ -210,6 +212,15 @@ export function AdminShell({
             <Menu className="size-5" />
           </button>
           <h1 className="font-display text-lg font-semibold">{title}</h1>
+          <button
+            type="button"
+            onClick={signOutAdmin}
+            title={`Sign out ${email}`}
+            className="ms-auto flex items-center gap-2 rounded-control px-3 py-2 text-sm font-medium text-panel-fg/70 ring-1 ring-panel-fg/10 hover:text-panel-fg"
+          >
+            <LogOut className="size-4" />
+            <span className="hidden sm:inline">Sign out</span>
+          </button>
         </header>
 
         <main className="p-4 sm:p-6">{children}</main>
