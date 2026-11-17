@@ -8,7 +8,12 @@ import { vi } from "vitest";
  */
 type Result = { data?: unknown; error?: { message: string } | null };
 type Op = { method: string; args: unknown[] };
-type User = { id: string; email?: string };
+type User = {
+  id: string;
+  email?: string;
+  app_metadata?: Record<string, unknown>;
+  user_metadata?: Record<string, unknown>;
+};
 
 export function fakeSupabase(
   opts: {
