@@ -75,7 +75,8 @@ function CheckoutPage() {
   const amount = reservationAmount(car.price);
   const steps = t.checkout.steps;
 
-  if (!isAvailable(car)) {
+  // Cars listed without a price can't be reserved online - there is nothing to charge.
+  if (!isAvailable(car) || !(car.price > 0)) {
     return (
       <div className="bg-paper">
         <div className="mx-auto max-w-[600px] px-5 py-20 text-center sm:px-8">

@@ -464,13 +464,20 @@ function CarDetailPage() {
             </div>
 
             <div className="mt-6 flex flex-col gap-2.5">
-              {available ? (
+              {available && car.price > 0 ? (
                 <Link
                   to="/checkout/$carId"
                   params={{ carId: car.id }}
                   className="rounded-control bg-brass px-4 py-3 text-center font-display text-sm font-medium text-white transition-colors hover:bg-brass-2"
                 >
                   {t.carDetail.reserveNow}
+                </Link>
+              ) : available ? (
+                <Link
+                  to="/contact"
+                  className="rounded-control bg-brass px-4 py-3 text-center font-display text-sm font-medium text-white transition-colors hover:bg-brass-2"
+                >
+                  {locale === "ar" ? "تواصل معنا لمعرفة السعر" : "Contact us for the price"}
                 </Link>
               ) : (
                 <div className="rounded-control bg-panel px-4 py-3 text-center font-display text-sm font-medium text-panel-fg/60">

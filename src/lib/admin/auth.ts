@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { isAdminUser } from "@/lib/admin/require-admin";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 /**
@@ -13,7 +14,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 export const getAdminUser = createServerFn({ method: "GET" }).handler(async () => {
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) return null;
+  if (error || !data.user || !isAdminUser(data.user)) return null;
   return { id: data.user.id, email: data.user.email ?? "" };
 });
 

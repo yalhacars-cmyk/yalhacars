@@ -21,15 +21,25 @@ describe("requireAdmin", () => {
     await expect(requireAdmin()).rejects.toThrow("Not authenticated");
   });
 
-  it("returns the session client for a signed-in user", async () => {
-    const client = fakeSupabase({ user: { id: "u1", email: "admin@example.com" } });
+  it("returns the session client for a signed-in admin", async () => {
+    const client = fakeSupabase({
+      user: { id: "u1", email: "admin@example.com", app_metadata: { role: "admin" } },
+    });
     getSupabaseServerClient.mockReturnValue(client);
     await expect(requireAdmin()).resolves.toBe(client);
   });
 
-  // Known gap, tracked here on purpose: requireAdmin only checks that *someone*
-  // is signed in, and public customers sign in with Google — so any customer
-  // passes it, and every admin server function then runs with the service-role
-  // key. Needs an admin allowlist (e.g. ADMIN_EMAILS) or an app_metadata role.
-  it.todo("rejects a signed-in user who is not an admin");
+  it("rejects a signed-in customer who is not an admin", async () => {
+    getSupabaseServerClient.mockReturnValue(
+      fakeSupabase({ user: { id: "u2", email: "customer@example.com", app_metadata: {} } }),
+    );
+    await expect(requireAdmin()).rejects.toThrow("Not authorized");
+  });
+
+  it("rejects a user whose own user_metadata claims admin (only app_metadata counts)", async () => {
+    getSupabaseServerClient.mockReturnValue(
+      fakeSupabase({ user: { id: "u3", user_metadata: { role: "admin" } } }),
+    );
+    await expect(requireAdmin()).rejects.toThrow("Not authorized");
+  });
 });
